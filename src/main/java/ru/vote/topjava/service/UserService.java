@@ -10,7 +10,6 @@ import java.util.List;
 @Service
 public class UserService {
 
-
     private UserRepository userRepository;
 
     @Autowired
@@ -18,19 +17,23 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<User> getAll() {
+    // Достать всех пользователей
+    public List<User> getAllUsers(){
         return userRepository.findAll();
     }
 
-    public void deleteById(long id) {
-        userRepository.deleteById(id);
+    // Достать только администраторов ресторанов
+    public List<User> findAdministrators(){
+        return userRepository.findAdministrators();
     }
 
-    public User getUser(long id) {
-       return userRepository.getOne(id);
+    // Достать только обычных пользователей
+    public List<User> findOtherUsers(){
+        return userRepository.findOtherUsers();
     }
 
-    public void save(User user) {
-        userRepository.save(user);
+    // Достать одного любого пользователя
+    public User getUserById(int id){
+        return userRepository.findById(id);
     }
 }
