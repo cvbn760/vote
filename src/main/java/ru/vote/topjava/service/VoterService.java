@@ -23,24 +23,19 @@ public class VoterService {
         this.voterRepository = voterRepository;
     }
 
-    // Достать все результаты голосовании
-    public List<Voter> getAllVoters() {
-        return voterRepository.findAll();
-    }
-
-    // Достать результаты голосования для конкретного пользователя
-    public List<Voter> getReportForUser(User user) {
-        return voterRepository.getReportForUser(user.getId());
+    // Достать все положительные результаты голосовании // Достать результаты голосования для конкретного пользователя
+    public List<Voter> getVoters(Integer id) {
+        return (id == null) ? voterRepository.findAll() : voterRepository.getReportForUser(id);
     }
 
     // Достать результат голосования для конкретного пользователя за конкретный день
-    public Voter getVoteForUserAboutDay(User user, LocalDate date) {
-        return voterRepository.getVoterPerDay(user.getId(), date);
+    public Voter getVoteForUserAboutDay(Integer id, LocalDate date) {
+        return voterRepository.getVoterPerDay(id, date);
     }
 
-    // Достать результат по menu_id и date
-    public Voter getVoteByMenuIdAndDate(Menu menu) {
-        return voterRepository.getVoteByMenuIdAndDate(menu.getIdMenu(), menu.getDate());
+    // Достать все голоса отданные за конкретное меню
+    public List<Voter> getVoteByMenuIdAndDate(Integer id, LocalDate date) {
+        return voterRepository.getVoteByMenuIdAndDate(id, date);
     }
 
     // Сохранить голос
@@ -50,9 +45,9 @@ public class VoterService {
 
     // Добавить или обновить запись о голосовании за меню
     @Transactional
-    public boolean addRecAboutVote(Menu menu, User user, boolean voice) throws SQLException {
+    public boolean addRecAboutVote(Menu menu, Integer id, boolean voice) throws SQLException {
         try {
-            Voter voter = getVoteForUserAboutDay(user, menu.getDate());
+            Voter voter = getVoteForUserAboutDay(id, menu.getDate());
             // Пользователь уже голосовал в текущую дату
             if (voter != null && DateTimeUtil.canVote(voter.getDate(), menu.getDate())) {
                 // 1) Отменяем уже отданный голос
@@ -71,7 +66,7 @@ public class VoterService {
             }
             else { // Пользователь еще не голосовал в текущую дату
                 // 1) Голосуем
-                voter = new Voter(0, menu.getIdMenu(), user.getId(), menu.getDate(), false, menu);
+                voter = new Voter(0, menu.getIdMenu(), id, menu.getDate(), false, menu);
                 voteAddAndSave(voter, menu, voice);
                 return true;
             }

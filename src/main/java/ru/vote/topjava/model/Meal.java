@@ -1,5 +1,7 @@
 package ru.vote.topjava.model;
 
+import net.bytebuddy.build.ToStringPlugin;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.lang.NonNull;
@@ -42,18 +44,19 @@ public class Meal {
     @Size(min = 0)
     private Float price;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "menu_id", referencedColumnName = "id_menu", nullable = false, insertable = false, updatable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Menu menu;
-
-    public Menu getMenu() {
-        return menu;
-    }
-
-    public void setMenu(Menu menu) {
-        this.menu = menu;
-    }
+//    @OneToOne(fetch = FetchType.EAGER)
+//    @JoinColumn(name = "menu_id", referencedColumnName = "id_menu", nullable = false, insertable = false, updatable = false)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
+//    @BatchSize(size = 1)
+//    private Menu menu;
+//
+//    public Menu getMenu() {
+//        return menu;
+//    }
+//
+//    public void setMenu(Menu menu) {
+//        this.menu = menu;
+//    }
 
     public Integer getMealId() {
         return mealId;

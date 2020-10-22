@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.vote.topjava.model.Meal;
 import ru.vote.topjava.repository.MealRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -21,6 +22,9 @@ public class MealService {
 
     // Добавить новую еду в меню
     public Meal addMealInMenu(Meal meal){
+        if (meal.getMealId() == null){
+            return mealRepository.save(meal);
+        }
         return mealRepository.save(meal);
     }
 
@@ -31,11 +35,14 @@ public class MealService {
 
     // Удалить еду
     public void deleteMealById(int id){
-        mealRepository.deleteById(id);
+        mealRepository.delete(id);
     }
 
-    // Достать всю еду
-    public List<Meal> getAllMeal(){
-        return mealRepository.findAll();
+    // Достать всю еду / Достать еду за конкретную дату
+    public List<Meal> getAllMeal(LocalDate date) {
+        if (date == null){
+            return mealRepository.findAll();
+        }
+        return mealRepository.getMealByDate(date);
     }
 }

@@ -17,16 +17,21 @@ import java.util.List;
 public interface VoterRepository extends CrudRepository<Voter, Integer>, JpaRepository<Voter, Integer>{
 
     // Достать отчет по голосованиям для конкретного пользователя
-    @Query("SELECT v FROM Voter v WHERE v.voterIdPk=:voterIdPk ORDER BY v.date DESC")
+    @Query("SELECT v FROM Voter v WHERE v.voterIdPk=:voterIdPk AND v.voice=true ORDER BY v.date DESC")
     public List<Voter> getReportForUser(@Param("voterIdPk") int voterIdPk);
 
     // Достать результат голосования для конкретного пользователя за конкретный день
     @Query("SELECT v FROM Voter v WHERE v.voterIdPk=:voterIdPk AND v.date=:date")
     public Voter getVoterPerDay(@Param("voterIdPk") int id,@Param("date") LocalDate date);
 
-    // Достать результат по menu_id и date
-    @Query("SELECT v FROM Voter v WHERE v.menuId=:menuId AND v.date=:date")
-    public Voter getVoteByMenuIdAndDate(@Param("menuId") int menuId, @Param("date") LocalDate date);
+    // Достать все голоса отданные за конкретное меню
+    @Query("SELECT v FROM Voter v WHERE v.menuId=:menuId AND v.date=:date AND v.voice=true")
+    public List<Voter> getVoteByMenuIdAndDate(@Param("menuId") int menuId, @Param("date") LocalDate date);
+
+    @Modifying
+    @Override
+    @Query(value = "SELECT v FROM Voter v WHERE v.voice=true ORDER BY v.date DESC", nativeQuery = true)
+    List<Voter> findAll();
 
     // Добавить или обновить запись о голосовании за меню
     @Modifying

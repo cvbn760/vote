@@ -7,6 +7,7 @@ import ru.vote.topjava.model.Voter;
 import ru.vote.topjava.repository.MenuRepository;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class MenuService {
@@ -33,13 +34,26 @@ public class MenuService {
         return menuRepository.getMenuForUserByVote(userId, menuId);
     }
 
-    // Получить меню с наибольшим количеством очков в данный день
-    public Menu getBestMenuByDate(LocalDate dateTime){
-        return menuRepository.getBestMenuByDate(dateTime);
+    // Получить меню с наибольшим(наименьшим) количеством очков в данный день
+    public Menu getTypeMenuByDate(LocalDate dateTime, int type){
+        return (type == 1) ? menuRepository.getBestMenuByDate(dateTime) : menuRepository.getMenuLoserByDate(dateTime);
     }
 
-    // Получить меню с наименьшим количеством очков в данный день
-    public Menu geMenuLoserByDate(LocalDate dateTime){
-        return menuRepository.getMenuLoserByDate(dateTime);
+    // Получить все меню за конкретный день
+    public List<Menu> getAllMenuForDay(LocalDate date){
+        return menuRepository.getMenusByDate(date);
+    }
+
+    // Достать вообще все меню
+    public  List<Menu> getAllMenus(){
+        return menuRepository.findAll();
+    }
+
+    // Сохранить или обновить меню
+    public Menu createOrUpdate(Menu menu){
+        if (menu.getIdMenu() == null) {
+            return menuRepository.save(menu);
+        }
+        return (menuRepository.update(menu.getDate(), menu.getIdMenu(), menu.getIdRest()) == 1) ? menu : null;
     }
 }

@@ -1,20 +1,19 @@
 package ru.vote.topjava.model;
 
+import org.hibernate.annotations.BatchSize;
+
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
 @Entity
 @Table(name = "menus")
 public class Menu {
 
     @Id
-    @SequenceGenerator(name = "menus_seq", sequenceName = "menus_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "menus_seq")
     @Column(name = "id_menu")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idMenu;
 
     @Column(name = "id_rest", nullable = false)
@@ -28,6 +27,7 @@ public class Menu {
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "menu_id", referencedColumnName = "id_menu",nullable = false, insertable = false, updatable = false)
+    @BatchSize(size = 30)
     private List<Meal> mealSet;
 
     public Menu(){}
@@ -71,6 +71,9 @@ public class Menu {
         this.mealSet = mealSet;
     }
 
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
 
     @Override
     public String toString() {

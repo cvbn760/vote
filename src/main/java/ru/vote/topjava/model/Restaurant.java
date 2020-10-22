@@ -1,18 +1,15 @@
 package ru.vote.topjava.model;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "restaurants")
 public class Restaurant {
     @Id
-    @SequenceGenerator(name = "restaurants_seq", sequenceName = "restaurants_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "restaurants_seq")
     @Column(name = "id_rest")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idRest;
 
     @Column(name = "id_owner_rest", nullable = false)
@@ -75,10 +72,12 @@ public class Restaurant {
 
     public Restaurant(){}
 
-    public Restaurant(Integer idOwnerRest, String nameRest, String address) {
+    public Restaurant(Integer idOwnerRest, String nameRest, String address, User adminRest) {
+        this.idOwnerRest = idOwnerRest;
         this.nameRest = nameRest;
         this.address = address;
         this.menus = new HashSet<>();
+        this.adminRest = adminRest;
     }
 
     @Override
@@ -88,7 +87,8 @@ public class Restaurant {
                 ", idOwnerRest=" + idOwnerRest +
                 ", nameRest='" + nameRest + '\'' +
                 ", address='" + address + '\'' +
-                ", menus size=" + menus.size() +
+                ", menus=" + menus.toString() +
+                ", adminRest=" + adminRest +
                 '}';
     }
 }

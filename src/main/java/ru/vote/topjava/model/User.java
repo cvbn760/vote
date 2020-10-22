@@ -1,5 +1,7 @@
 package ru.vote.topjava.model;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
@@ -11,8 +13,7 @@ import java.util.Set;
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = {"email", "id"}, name = "users_idx")})
 public class User {
     @Id
-    @SequenceGenerator(name = "users_seq", sequenceName = "users_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_seq")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "name", nullable = false)
@@ -31,6 +32,7 @@ public class User {
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
+    @JsonGetter
     public Set<Role> getRoles() {
         return roles;
     }
@@ -39,32 +41,44 @@ public class User {
         this.roles = CollectionUtils.isEmpty(roles) ? EnumSet.noneOf(Role.class) : EnumSet.copyOf(roles);
     }
 
+    @JsonGetter
     public Integer getId() {
         return id;
     }
 
+    @JsonGetter
     public String getName() {
         return name;
     }
 
+    @JsonGetter
     public String getEmail() {
         return email;
     }
 
+    @JsonGetter
     public String getPassword() {
         return password;
     }
 
+    @JsonSetter
     public void setName(String name) {
         this.name = name;
     }
 
+    @JsonSetter
     public void setEmail(String email) {
         this.email = email;
     }
 
+    @JsonSetter
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @JsonSetter
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public User(){}

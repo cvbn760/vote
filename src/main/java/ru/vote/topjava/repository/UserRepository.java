@@ -9,7 +9,6 @@ import ru.vote.topjava.model.User;
 import java.util.List;
 
 @Repository
-@Transactional(readOnly = true)
 public interface UserRepository extends JpaRepository<User, Integer> {
 
     //Достать только администраторов ресторанов
@@ -19,7 +18,4 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     // Достать только обычных пользователей
     @Query("SELECT DISTINCT u FROM User u INNER JOIN Voter v ON v.voterIdPk = u.id")
     List<User> findOtherUsers();
-
-    // Достать одного любого пользователя
-    User findById(int id);
 }

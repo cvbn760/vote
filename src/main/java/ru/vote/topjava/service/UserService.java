@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.vote.topjava.model.User;
 import ru.vote.topjava.repository.UserRepository;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -34,6 +35,19 @@ public class UserService {
 
     // Достать одного любого пользователя
     public User getUserById(int id){
-        return userRepository.findById(id);
+        return userRepository.findById(id).get();
+    }
+
+    // Удалить пользователя
+    public void delete(int id){
+        userRepository.deleteById(id);
+    }
+
+    // Сохранить или обновить пользователя
+    public User createOrUpdate(User user, Integer id){
+        if (id != null){
+            user.setId(id);
+        }
+        return userRepository.save(user);
     }
 }
