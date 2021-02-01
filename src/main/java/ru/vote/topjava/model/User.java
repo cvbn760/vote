@@ -1,7 +1,5 @@
 package ru.vote.topjava.model;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonSetter;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
@@ -32,7 +30,6 @@ public class User {
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
-    @JsonGetter
     public Set<Role> getRoles() {
         return roles;
     }
@@ -41,42 +38,34 @@ public class User {
         this.roles = CollectionUtils.isEmpty(roles) ? EnumSet.noneOf(Role.class) : EnumSet.copyOf(roles);
     }
 
-    @JsonGetter
     public Integer getId() {
         return id;
     }
 
-    @JsonGetter
     public String getName() {
         return name;
     }
 
-    @JsonGetter
     public String getEmail() {
         return email;
     }
 
-    @JsonGetter
     public String getPassword() {
         return password;
     }
 
-    @JsonSetter
     public void setName(String name) {
         this.name = name;
     }
 
-    @JsonSetter
     public void setEmail(String email) {
         this.email = email;
     }
 
-    @JsonSetter
     public void setPassword(String password) {
         this.password = password;
     }
 
-    @JsonSetter
     public void setId(Integer id) {
         this.id = id;
     }

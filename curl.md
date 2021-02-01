@@ -12,8 +12,9 @@
 #### достать только администраторов ресторанов
 `curl -s GET http://localhost:8080/rest/users/get_us?option=admin`
 
-#### удалить пользователя по id
-`curl -X DELETE http://localhost:8080/rest/users/3`
+#### удалить текущего пользователя 
+`curl -X DELETE http://localhost:8080/rest/users/delete_user --user admin@gmail.com:admin`
+curl -X DELETE http://localhost:8080/rest/users/delete_user --user user@yandex.ru:password
 
 #### получить заготовку пользователя
 `curl -s GET http://localhost:8080/rest/users/new_user/1`
@@ -22,8 +23,9 @@
 `curl -X POST -v -d "{"""id""":null,"""name""":"""Create name""","""email""":"""create_email@yandex.ru""","""password""":"""create pswd""","""roles""":["""ADMIN"""]}" -H "Content-Type: application/json; charset=UTF-8" http://localhost:8080/rest/users/create`
 
 #### обновить cуществующего пользователя
-`curl -X POST -v -d "{"""id""":3,"""name""":"""Update name""","""email""":"""update_email@yandex.ru""","""password""":"""update pswd""","""roles""":["""ADMIN"""]}" -H "Content-Type: application/json; charset=UTF-8" http://localhost:8080/rest/users/create?id=3`
-
+`curl -X POST -v -d "{"""id""":3,"""name""":"""Update name""","""email""":"""update_email@yandex.ru""","""password""":"""update pswd""","""roles""":["""ADMIN"""]}" -H "Content-Type: application/json; charset=UTF-8" http://localhost:8080/rest/users/create --user user@yandex.ru:password`
+curl -X POST -v -d "{"""id""":3,"""name""":"""Update name""","""email""":"""update_email@yandex.ru""","""password""":"""update pswd""","""roles""":["""ADMIN"""]}" -H "Content-Type: application/json; charset=UTF-8" http://localhost:8080/rest/users/create --user anna2000@mail.com:anneta
+curl -X POST -v -d "{"""id""":3,"""name""":"""Update name""","""email""":"""update_email@yandex.ru""","""password""":"""update pswd""","""roles""":["""ADMIN"""]}" -H "Content-Type: application/json; charset=UTF-8" http://localhost:8080/rest/users/create
 ############################################   Меню
 
 #### достать вообще все меню
@@ -45,14 +47,17 @@
 `curl -s GET http://localhost:8080/rest/menus/get_win/0?date=2020-07-14`
 
 #### получить заготовку меню
-`curl -s GET http://localhost:8080/rest/menus/new_menu/1`
-
+`curl -s GET http://localhost:8080/rest/menus/new_menu/0 --user admin@gmail.com:admin`
+curl -s GET http://localhost:8080/rest/menus/new_menu/1 --user user@yandex.ru:password
 #### сохранить меню
-`curl -X POST -v -d "{"""idMenu""":null,"""date""":"""2020-07-14""","""idRest""":1}" -H "Content-Type: application/json; charset=UTF-8" http://localhost:8080/rest/menus/create`
+`curl -X POST -v -d "{"""idMenu""":null,"""date""":"""2020-07-14""","""idRest""":1}" -H "Content-Type: application/json; charset=UTF-8" http://localhost:8080/rest/menus/create --user anna2000@mail.com:anneta`
  
 #### обновить меню
 `curl -X POST -v -d "{"""idMenu""":4,"""date""":"""2020-07-14""","""idRest""":1}" -H "Content-Type: application/json; charset=UTF-8" http://localhost:8080/rest/menus/create`
 
+#### удалить меню
+`curl -X DELETE http://localhost:8080/rest/menus/1 --user admin@gmail.com:admin`
+curl -X DELETE http://localhost:8080/rest/menus/1 --user user@yandex.ru:password
 ############################################   Еда
 
 #### достать вообще всю еду
@@ -62,16 +67,21 @@
 `curl -s GET http://localhost:8080/rest/meals/3`
 
 #### удалить еду по id
-`curl -X DELETE http://localhost:8080/rest/meals/3`
+`curl -X DELETE http://localhost:8080/rest/meals/3 --user admin@gmail.com:admin`
+curl -X DELETE http://localhost:8080/rest/meals/3 --user user@yandex.ru:password
 
 #### достать всю еду на конкретный день
 `curl -s GET http://localhost:8080/rest/meals/all?date=2020-07-14`
 
 #### добавить новую еду
-`curl -X POST -v -d "{"""mealId""":null,"""menuId""":2,"""name""":"""new_name""","""description""":"""new_description""","""calories""":111,"""price""":99.99}" -H "Content-Type: application/json; charset=UTF-8" http://localhost:8080/rest/meals/create`
+`curl -X POST -v -d "{"""mealId""":null,"""menuId""":2,"""name""":"""new_name""","""description""":"""new_description""","""calories""":111,"""price""":99.99}" -H "Content-Type: application/json; charset=UTF-8" http://localhost:8080/rest/meals/create --user admin@gmail.com:admin`
 
 #### обновить существующую еду
 `curl -X POST -v -d "{"""mealId""":40,"""menuId""":2,"""name""":"""update_name""","""description""":"""update_description""","""calories""":999,"""price""":11.99}" -H "Content-Type: application/json; charset=UTF-8" http://localhost:8080/rest/meals/create`
+
+#### получить заготовку еды
+`curl -s GET http://localhost:8080/rest/meals/new_meal/0 --user admin@gmail.com:admin`
+curl -s GET http://localhost:8080/rest/meals/new_meal/0 --user user@yandex.ru:password
 
 ############################################   Рестораны
 
@@ -85,24 +95,27 @@
 `curl -s GET http://localhost:8080/rest/rest/all/2`
 
 #### удалить ресторан по id
-`curl -X DELETE http://localhost:8080/rest/rest/3`
+`curl -X DELETE http://localhost:8080/rest/rest/0 --user admin@gmail.com:admin`
+curl -X DELETE http://localhost:8080/rest/rest/0 --user user@yandex.ru:password
 
 #### получить заготовку ресторана
-`curl -s GET http://localhost:8080/rest/rest/new_rest`
+`curl -s GET http://localhost:8080/rest/rest/new_rest --user admin@gmail.com:admin`
+curl -s GET http://localhost:8080/rest/rest/new_rest --user user@yandex.ru:password
 
 #### сохранить ресторан
-`curl -X POST -v -d "{"""idRest""":null,"""idOwnerRest""":1,"""nameRest""":"""new_name_rest""","""address""":"""new_rest_address""","""menus""":[],"""adminRest""":{"""id""":1,"""name""":"""Егор""","""email""":"""admin@gmail.com""","""password""":"""admin""","""roles""":["""ADMIN"""]}}" -H "Content-Type: application/json; charset=UTF-8" http://localhost:8080/rest/rest/create`
-
+`curl -X POST -v -d "{"""idRest""":null,"""idOwnerRest""":1,"""nameRest""":"""new_name_rest""","""address""":"""new_rest_address""","""menus""":[],"""adminRest""":{"""id""":1,"""name""":"""Егор""","""email""":"""admin@gmail.com""","""password""":"""admin""","""roles""":["""ADMIN"""]}}" -H "Content-Type: application/json; charset=UTF-8" http://localhost:8080/rest/rest/create --user admin@gmail.com:admin`
+curl -X POST -v -d "{"""idRest""":null,"""idOwnerRest""":1,"""nameRest""":"""new_name_rest""","""address""":"""new_rest_address""","""menus""":[],"""adminRest""":{"""id""":1,"""name""":"""Егор""","""email""":"""admin@gmail.com""","""password""":"""admin""","""roles""":["""ADMIN"""]}}" -H "Content-Type: application/json; charset=UTF-8" http://localhost:8080/rest/rest/create --user user@yandex.ru:password
 #### обновить ресторан
-`curl -X POST -v -d "{"""idRest""":0,"""idOwnerRest""":1,"""nameRest""":"""update_name_rest""","""address""":"""update_rest_address""","""menus""":[],"""adminRest""":{"""id""":1,"""name""":"""Егор""","""email""":"""admin@gmail.com""","""password""":"""admin""","""roles""":["""ADMIN"""]}}" -H "Content-Type: application/json; charset=UTF-8" http://localhost:8080/rest/rest/create`
-
+`curl -X POST -v -d "{"""idRest""":0,"""idOwnerRest""":1,"""nameRest""":"""update_name_rest""","""address""":"""update_rest_address""","""menus""":[],"""adminRest""":{"""id""":1,"""name""":"""Егор""","""email""":"""admin@gmail.com""","""password""":"""admin""","""roles""":["""ADMIN"""]}}" -H "Content-Type: application/json; charset=UTF-8" http://localhost:8080/rest/rest/create --user admin@gmail.com:admin`
+curl -X POST -v -d "{"""idRest""":0,"""idOwnerRest""":1,"""nameRest""":"""update_name_rest""","""address""":"""update_rest_address""","""menus""":[],"""adminRest""":{"""id""":1,"""name""":"""Егор""","""email""":"""admin@gmail.com""","""password""":"""admin""","""roles""":["""ADMIN"""]}}" -H "Content-Type: application/json; charset=UTF-8" http://localhost:8080/rest/rest/create --user user@yandex.ru:password
 ############################################   Голоса
 
 #### достать вообще все положительные голоса
-`curl -s GET http://localhost:8080/rest/vote/get_vote`
-
+`curl -s GET http://localhost:8080/rest/vote/get_vote --user user@yandex.ru:password`
+curl -s GET http://localhost:8080/rest/vote/get_vote
 #### достать все положительные голоса для конкретного пользователя
-`curl -s GET http://localhost:8080/rest/vote/get_vote?id=2`
+`curl -s GET http://localhost:8080/rest/vote/get_vote?id=2 --user admin@gmail.com:admin`
+curl -s GET http://localhost:8080/rest/vote/get_vote?id=2 --user user@yandex.ru:password
 
 #### достать все положительные голоса отданные за конкретное меню
 `curl -d date=2020-07-14 -d menu_id=0 -G http://localhost:8080/rest/vote/menu`
@@ -111,7 +124,8 @@
 `curl -d date=2020-07-15 -d user_id=2 -G http://localhost:8080/rest/vote/user`
 
 #### отдать голос за меню
-`curl -X POST -v -d "{"""idMenu""":0,"""idRest""":0,"""counterVoice""":1500,"""date""":"""2020-07-14""","""mealList""":null}" -H "Content-Type: application/json; charset=UTF-8" http://localhost:8080/rest/vote/update/2/true`
-
+`curl -X POST -v -d "{"""idMenu""":0,"""idRest""":0,"""counterVoice""":1500,"""date""":"""2020-07-14""","""mealList""":null}" -H "Content-Type: application/json; charset=UTF-8" http://localhost:8080/rest/vote/update/true --user admin@gmail.com:admin`
+curl -X POST -v -d "{"""idMenu""":0,"""idRest""":0,"""counterVoice""":1500,"""date""":"""2020-07-14""","""mealList""":null}" -H "Content-Type: application/json; charset=UTF-8" http://localhost:8080/rest/vote/update/true --user user@yandex.ru:password
+curl -X POST -v -d "{"""idMenu""":0,"""idRest""":0,"""counterVoice""":1500,"""date""":"""2020-07-14""","""mealList""":null}" -H "Content-Type: application/json; charset=UTF-8" http://localhost:8080/rest/vote/update/true
 #### забрать за меню
 `curl -X POST -v -d "{"""idMenu""":0,"""idRest""":0,"""counterVoice""":1500,"""date""":"""2020-07-14""","""mealList""":null}" -H "Content-Type: application/json; charset=UTF-8" http://localhost:8080/rest/vote/update/2/false`

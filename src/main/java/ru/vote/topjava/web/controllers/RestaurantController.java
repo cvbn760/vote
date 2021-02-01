@@ -9,6 +9,7 @@ import ru.vote.topjava.model.Restaurant;
 import ru.vote.topjava.model.Role;
 import ru.vote.topjava.model.User;
 import ru.vote.topjava.service.RestaurantService;
+import ru.vote.topjava.util.SecurityUtil;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,34 +22,34 @@ public class RestaurantController {
     @Autowired
     private RestaurantService restaurantService;
 
-    // Достать вообще все рестораны / достать все рестораны по id владельца ресторана
+    // Достать вообще все рестораны / достать все рестораны по id владельца ресторана (Доступно для всех)
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public List<Restaurant> getAll(@RequestParam(value = "id", required = false) Integer id){
         return restaurantService.getAllRestaurants(id);
     }
 
-    // Достать ресторан по id
+    // Достать ресторан по id (Доступно для всех)
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public Restaurant get(@PathVariable int id) {
         return restaurantService.getRestaurantById(id);
     }
 
-    // Удалить ресторан по id
+    // Удалить ресторан по id (Доступно только автору)
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable int id){
-        restaurantService.delete(id);
+        restaurantService.delete(id, SecurityUtil.authUserId());
     }
 
-    // Получить заготовку ресторана
+    // Получить заготовку ресторана (Доступно если пользователь зарегистрирован как администратор)
     @RequestMapping(value = "/new_rest", method = RequestMethod.GET)
     public Restaurant getNewRest(){
-        return restaurantService.getNewRest();
+        return restaurantService.getNewRest(SecurityUtil.authUserId());
     }
 
-    // Сохранить ресторан / Обновить ресторан
+    // Сохранить ресторан / Обновить ресторан (Доступно только автору)
     @RequestMapping(value = "/create", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Restaurant> createOrUpdate(@RequestBody Restaurant restaurant){
-        restaurantService.createOrUpdate(restaurant);
+        restaurantService.createOrUpdate(restaurant, SecurityUtil.authUserId());
         return ResponseEntity.ok(restaurant);
     }
 }

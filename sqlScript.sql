@@ -19,7 +19,7 @@ CREATE TABLE users
     --id_role          INTEGER                     NOT NULL,
      name             VARCHAR(30)                 NOT NULL,
      email            VARCHAR(30)                 NOT NULL,
-     password         VARCHAR(50)                 NOT NULL
+     password         VARCHAR(250)                 NOT NULL
 );
 
 

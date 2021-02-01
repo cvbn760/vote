@@ -22,10 +22,13 @@ public interface MealRepository extends JpaRepository<Meal, Integer> {
                    "SELECT meal_id FROM meals ml \n" +
                    "INNER JOIN menus ms ON ms.id_menu=ml.menu_id \n" +
                    "INNER JOIN restaurants rest ON rest.id_rest=ms.id_rest\n" +
-                   "INNER JOIN users us ON us.id=rest.id_owner_rest AND ml.meal_id=:id)", nativeQuery = true)
-    void delete(@Param("id") int id);
+                   "INNER JOIN users us ON us.id=rest.id_owner_rest " +
+                   "AND ml.meal_id=:id AND rest.id_owner_rest=:authUserId)", nativeQuery = true)
+    void delete(@Param("id") int id, @Param("authUserId") long authUserId);
 
     @Query(value = "SELECT ml FROM Meal ml INNER JOIN Menu mn ON ml.menuId=mn.idMenu AND mn.date=:date")
     List<Meal> getMealByDate(@Param("date") LocalDate date);
+
+
 }
 

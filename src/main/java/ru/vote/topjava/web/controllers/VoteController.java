@@ -5,11 +5,13 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 import ru.vote.topjava.model.Menu;
 import ru.vote.topjava.model.User;
 import ru.vote.topjava.model.Voter;
 import ru.vote.topjava.service.VoterService;
+import ru.vote.topjava.util.SecurityUtil;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -23,14 +25,13 @@ public class VoteController {
     @Autowired
     private VoterService voterService;
 
-    // Достать результаты голосования // Достать все положительные результаты голосования для конкретного пользователя
+    // Достать все положительные результаты голосования для конкретного пользователя (Доступно только хозяину  голосов)
     @RequestMapping(value = "/get_vote", method = RequestMethod.GET)
-    public List<Voter> getVote(@RequestParam(name = "id", required = false) Integer id){
-        System.out.println("Достать результаты голосования");
-        return voterService.getVoters(id);
+    public List<Voter> getVote(){
+        return voterService.getVoters((int) SecurityUtil.authUserId());
     }
 
-    // Достать все положительные голоса отданные за конкретное меню
+    // Достать все положительные голоса отданные за конкретное меню (Доступно всем)
     @RequestMapping(value = "/menu", method = RequestMethod.GET)
     public List<Voter> getVoteForMenu(@RequestParam(name = "menu_id", required = true) Integer id,
                                       @RequestParam(name = "date", required = true)
@@ -38,7 +39,7 @@ public class VoteController {
         return voterService.getVoteByMenuIdAndDate(id, date);
     }
 
-    // Достать результат голосования для конкретного пользователя за конкретный день
+    // Достать результат голосования для конкретного пользователя за конкретный день (Доступно всем)
     @RequestMapping(value = "/user", method = RequestMethod.GET)
     public Voter getVoteForUser(@RequestParam(name = "user_id", required = true) Integer id,
                                 @RequestParam(name = "date", required = true)
@@ -46,12 +47,11 @@ public class VoteController {
         return voterService.getVoteForUserAboutDay(id, date);
     }
 
-    // Добавить или обновить запись о голосовании за меню
-    @RequestMapping(value = "/update/{user_id}/{voice}", method = RequestMethod.POST)
+    // Добавить или обновить запись о голосовании за меню (Доступно только хозяину голоса)
+    @RequestMapping(value = "/update/{voice}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
     public void createOrUpdate(@RequestBody Menu menu,
-                               @PathVariable(name = "user_id", required = true) Integer id,
                                @PathVariable(name = "voice", required = true) boolean voice) throws SQLException {
-        voterService.addRecAboutVote(menu, id, voice);
+        voterService.addRecAboutVote(menu, (int) SecurityUtil.authUserId(), voice);
     }
 }

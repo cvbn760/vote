@@ -1,6 +1,7 @@
 package ru.vote.topjava.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.vote.topjava.model.Menu;
@@ -8,6 +9,7 @@ import ru.vote.topjava.model.User;
 import ru.vote.topjava.model.Voter;
 import ru.vote.topjava.repository.VoterRepository;
 import ru.vote.topjava.util.DateTimeUtil;
+import ru.vote.topjava.util.SecurityUtil;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -23,17 +25,17 @@ public class VoterService {
         this.voterRepository = voterRepository;
     }
 
-    // Достать все положительные результаты голосовании // Достать результаты голосования для конкретного пользователя
+    // Достать все положительные результаты голосовании // Достать результаты голосования для конкретного пользователя (Доступно всем)
     public List<Voter> getVoters(Integer id) {
-        return (id == null) ? voterRepository.findAll() : voterRepository.getReportForUser(id);
+        return voterRepository.getReportForUser(id);
     }
 
-    // Достать результат голосования для конкретного пользователя за конкретный день
+    // Достать результат голосования для конкретного пользователя за конкретный день (Доступно всем)
     public Voter getVoteForUserAboutDay(Integer id, LocalDate date) {
         return voterRepository.getVoterPerDay(id, date);
     }
 
-    // Достать все голоса отданные за конкретное меню
+    // Достать все голоса отданные за конкретное меню (Доступно всем)
     public List<Voter> getVoteByMenuIdAndDate(Integer id, LocalDate date) {
         return voterRepository.getVoteByMenuIdAndDate(id, date);
     }
@@ -46,6 +48,9 @@ public class VoterService {
     // Добавить или обновить запись о голосовании за меню
     @Transactional
     public boolean addRecAboutVote(Menu menu, Integer id, boolean voice) throws SQLException {
+        if (SecurityUtil.isAdmin()) {
+            throw new BadCredentialsException("Administrators cannot vote...");
+        }
         try {
             Voter voter = getVoteForUserAboutDay(id, menu.getDate());
             // Пользователь уже голосовал в текущую дату

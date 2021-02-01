@@ -2,12 +2,12 @@ SET DATABASE SQL SYNTAX PGS TRUE;
 
 INSERT INTO users (id, name, email, password)
 VALUES
-(0, 'Алексей', 'user@yandex.ru', 'password'),
-(1, 'Егор', 'admin@gmail.com', 'admin'),
-(2, 'Игорь', 'stack@yandex.com', 'Itest'),
-(3, 'Анна', 'anna2000@mail.com', 'anneta'),
-(4, 'Евгений', 'orbita13@outlook.com', 'orbit'),
-(5, 'Ольга', 'thelastofuspart2@gmail.com', 'joelisdeadabbyisskura');
+(0, 'Алексей', 'user@yandex.ru', '{noop}password'),
+(1, 'Егор', 'admin@gmail.com', '{noop}admin'),
+(2, 'Игорь', 'stack@yandex.com', '{noop}Itest'),
+(3, 'Анна', 'anna2000@mail.com', '{noop}anneta'),
+(4, 'Евгений', 'orbita13@outlook.com', '{noop}orbit'),
+(5, 'Ольга', 'thelastofuspart2@gmail.com', '{noop}joelisdeadabbyisskura');
 
 INSERT INTO user_roles (role, role_id) VALUES
 ('USER', 0),
@@ -26,17 +26,17 @@ VALUES
 INSERT INTO menus (id_menu, id_rest, counter_voice, date)
 VALUES
 -- Данные о голосовании за обеды в Якитории
-(0, 0, 1500, '2020-07-14'),
-(1, 0, 1550, '2020-07-15'),
-(2, 0, 1560, '2020-07-16'),
+(0, 0, 2, '2020-07-14'),
+(1, 0, 0, '2020-07-15'),
+(2, 0, 0, '2020-07-16'),
 -- Данные о голосовании за обеды в Шаурдональдсе
-(3, 1, 1100, '2020-07-14'),
-(4, 1, 736, '2020-07-15'),
-(5, 1, 1080, '2020-07-16'),
+(3, 1, 0, '2020-07-14'),
+(4, 1, 1, '2020-07-15'),
+(5, 1, 0, '2020-07-16'),
 -- Данные о голосовании за обеды в Папе Джонс
-(6, 2, 699, '2020-07-14'),
-(7, 2, 1885, '2020-07-15'),
-(8, 2, 1375, '2020-07-16');
+(6, 2, 0, '2020-07-14'),
+(7, 2, 1, '2020-07-15'),
+(8, 2, 1, '2020-07-16');
 
 INSERT INTO voters (menu_id, voter_id_pk, date, voice)
 VALUES
