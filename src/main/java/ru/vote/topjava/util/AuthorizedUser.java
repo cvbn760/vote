@@ -1,6 +1,5 @@
 package ru.vote.topjava.util;
 
-
 import ru.vote.topjava.model.User;
 
 public class AuthorizedUser extends org.springframework.security.core.userdetails.User {
@@ -14,5 +13,13 @@ public class AuthorizedUser extends org.springframework.security.core.userdetail
 
     public int getId(){
         return user.getId();
+    }
+
+    public void update(User newUser){
+        user = newUser;
+    }
+
+    public User getUser(){
+        return user;
     }
 }

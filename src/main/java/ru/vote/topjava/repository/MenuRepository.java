@@ -25,11 +25,11 @@ public interface MenuRepository extends JpaRepository<Menu, Integer> {
 
     // Получить меню с наибольшим количеством очков в данный день
     @Query("SELECT m FROM Menu m WHERE m.counterVoice = (SELECT max (men.counterVoice) FROM Menu men WHERE men.date=:date)")
-    Menu getBestMenuByDate(@Param("date") LocalDate date);
+    List<Menu> getBestMenuByDate(@Param("date") LocalDate date);
 
     // Получить меню с наименьшим количеством очков в данный день
     @Query("SELECT m FROM Menu m WHERE m.counterVoice = (SELECT min (men.counterVoice) FROM Menu men WHERE men.date=:date)")
-    Menu getMenuLoserByDate(@Param("date") LocalDate date);
+    List<Menu> getMenuLoserByDate(@Param("date") LocalDate date);
 
     List<Menu> getMenusByDate(LocalDate date);
 

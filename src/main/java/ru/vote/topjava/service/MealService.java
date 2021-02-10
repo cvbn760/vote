@@ -1,7 +1,7 @@
 package ru.vote.topjava.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.vote.topjava.model.Meal;
@@ -37,7 +37,7 @@ public class MealService {
     private boolean canEdit(int menuId, long authUserId){
         List<Restaurant> restaurant = restaurantRepository.findRestaurantByMenuId(menuId, (int) authUserId);
         if (restaurant.isEmpty()){
-            throw new BadCredentialsException("You cannot edit meal because the menu or restaurant does not exist or you do not have access...");
+            throw new AccessDeniedException("You cannot edit meal because the menu or restaurant does not exist or you do not have access...");
         }
         return true;
     }

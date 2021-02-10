@@ -4,20 +4,49 @@
              xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 	http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
 
-    <http pattern="/rest/**"  use-expressions="true" name="restSecurityFilterChain" create-session="stateless">
+    <http pattern="/users/**"  use-expressions="true" name="usersFilter" create-session="stateless">
         <http-basic/>
-        <intercept-url pattern="/**" access="isAuthenticated()" />
-        <intercept-url pattern="rest/users/create" access="permitAll()" />
+        <intercept-url pattern="/**/auth/**" access="isAuthenticated()"/>
+        <intercept-url pattern="/**/anon/**" access="hasRole('ROLE_ANONYMOUS')"/>
+        <intercept-url pattern="/**/all/**" access="permitAll()"/>
+        <csrf disabled="true"/>
+    </http>
+
+    <http pattern="/menus/**"  use-expressions="true" name="menusFilter" create-session="stateless">
+        <http-basic/>
+        <intercept-url pattern="/**/auth/**" access="isAuthenticated()"/>
+        <intercept-url pattern="/**/admin/**" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/**/all/**" access="permitAll()"/>
+        <csrf disabled="true"/>
+    </http>
+
+    <http pattern="/meals/**"  use-expressions="true" name="mealsFilter" create-session="stateless">
+        <http-basic/>
+        <intercept-url pattern="/**/all/**" access="permitAll()"/>
+        <intercept-url pattern="/**/admin/**" access="hasRole('ROLE_ADMIN')"/>
+        <csrf disabled="true"/>
+    </http>
+
+    <http pattern="/rest/**"  use-expressions="true" name="restFilter" create-session="stateless">
+        <http-basic/>
+        <intercept-url pattern="/**/all/**" access="permitAll()"/>
+        <intercept-url pattern="/**/admin/**" access="hasRole('ROLE_ADMIN')"/>
+        <csrf disabled="true"/>
+    </http>
+
+    <http pattern="/vote/**"  use-expressions="true" name="voteFilter" create-session="stateless">
+        <http-basic/>
+        <intercept-url pattern="/**/auth/**" access="isAuthenticated()"/>
+        <intercept-url pattern="/**/user/**" access="hasRole('ROLE_USER')"/>
         <csrf disabled="true"/>
     </http>
 
     <http>
-        <intercept-url pattern="/**" access="isAuthenticated()" />
-
         <form-login login-page="/login" default-target-url="/rest"
                     authentication-failure-url="/login?error=true"
                     login-processing-url="/spring_security_check"/>
-        <logout logout-success-url="/login"/>
+        <logout logout-success-url="/index.html" logout-url="/logout" />
+        <csrf disabled="true"/>
     </http>
 
     <beans:bean class="org.springframework.security.crypto.factory.PasswordEncoderFactories" id="passwordEncoder" factory-method="createDelegatingPasswordEncoder"/>

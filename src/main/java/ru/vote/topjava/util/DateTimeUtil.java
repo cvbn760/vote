@@ -1,18 +1,17 @@
 package ru.vote.topjava.util;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class DateTimeUtil {
 
-    // Проверка даты голосования
-    // - Изменять голос для меню на сегодня можно не позднее 11:00 текущего дня
-    // - Изменять голос для меню на любой следующий день можно не позднее 11:00 того дня, на который это меню запланировано
-    // - Изменять голос для меню за прошедшие дни нельзя
-    public static boolean canVote(LocalDate  dateOne, LocalDate dateTwo){
-        //if (dateOne.isEqual(dateTwo) && dateOne.isAfter(LocalDate.now())){ // Проверка текущего дня
-        if (dateOne.isEqual(dateTwo)){ // Без проверки текущего дня
+    public static boolean canEdit(LocalDate  dateMenu) {
+        LocalDateTime now = LocalDateTime.now();
+        if ((now.toLocalDate().isBefore(dateMenu)) | (now.toLocalDate().isEqual(dateMenu) && now.getHour() <= 11)) {
             return true;
         }
-        return false;
+        else {
+            return false;
+        }
     }
 }

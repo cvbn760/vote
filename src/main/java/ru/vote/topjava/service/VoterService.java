@@ -1,17 +1,14 @@
 package ru.vote.topjava.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpStatusCodeException;
 import ru.vote.topjava.model.Menu;
-import ru.vote.topjava.model.User;
 import ru.vote.topjava.model.Voter;
 import ru.vote.topjava.repository.VoterRepository;
 import ru.vote.topjava.util.DateTimeUtil;
-import ru.vote.topjava.util.SecurityUtil;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -40,28 +37,23 @@ public class VoterService {
         return voterRepository.getVoteByMenuIdAndDate(id, date);
     }
 
-    // Сохранить голос
+
     public Voter saveVoter(Voter voter) {
         return voterRepository.save(voter);
     }
 
-    // Добавить или обновить запись о голосовании за меню
-    @Transactional
-    public boolean addRecAboutVote(Menu menu, Integer id, boolean voice) throws SQLException {
-        if (SecurityUtil.isAdmin()) {
-            throw new BadCredentialsException("Administrators cannot vote...");
+    public boolean addRecAboutVote(Menu menu, Integer id, boolean voice) throws Exception {
+        if (!DateTimeUtil.canEdit(menu.getDate())){
+            throw new HttpStatusCodeException(HttpStatus.BAD_REQUEST, "Voting time is up...") {
+            };
         }
         try {
             Voter voter = getVoteForUserAboutDay(id, menu.getDate());
-            // Пользователь уже голосовал в текущую дату
-            if (voter != null && DateTimeUtil.canVote(voter.getDate(), menu.getDate())) {
-                // 1) Отменяем уже отданный голос
+            if (voter != null) {
                 cancelVoteAndSave(voter);
-                // Если нужно только отменить
                 if (voter.getMenu().getIdMenu().intValue() == menu.getIdMenu().intValue() && !voice) {
                     return true;
                 }
-                // 2) Голосуем заново
                 if (voter.getMenu().getIdMenu().intValue() == menu.getIdMenu().intValue()) {
                     voteAddAndSave(voter, voter.getMenu(), voice);
                     return true;
@@ -69,8 +61,7 @@ public class VoterService {
                 voteAddAndSave(voter, menu, voice);
                 return true;
             }
-            else { // Пользователь еще не голосовал в текущую дату
-                // 1) Голосуем
+            else {
                 voter = new Voter(0, menu.getIdMenu(), id, menu.getDate(), false, menu);
                 voteAddAndSave(voter, menu, voice);
                 return true;
@@ -82,7 +73,6 @@ public class VoterService {
         }
     }
 
-    // Отменить голос и сохранить отмену
     private boolean cancelVoteAndSave(Voter voter) {
         if (voter.isVoice()) {
             voter.setVoice(false);
@@ -95,7 +85,6 @@ public class VoterService {
         }
     }
 
-    // Присвоить голос и сохранить изменения
     private boolean voteAddAndSave(Voter voter, Menu menu, boolean voice) {
         if (voice) {
             menu.incrementCounter();

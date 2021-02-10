@@ -1,31 +1,39 @@
 package ru.vote.topjava.util;
 
-import ru.vote.topjava.model.Role;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import ru.vote.topjava.model.User;
-
-import java.util.Set;
 
 public class SecurityUtil {
 
     private static User user;
 
-    public static void setUser(User user){
-        SecurityUtil.user = user;
+    public static AuthorizedUser safeGet(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            return null;
+        }
+        Object principal = auth.getPrincipal();
+        return (principal instanceof AuthorizedUser) ? (AuthorizedUser) principal : null;
     }
 
-    public static Set<Role> roleAuthUser() {
-        return user.getRoles();
+    public static int authUserId() {
+        return safeGet().getId();
     }
 
-    public static boolean isAdmin(){
-        return roleAuthUser().contains(Role.ADMIN);
-    }
-
-    public static long authUserId() {
-        return user.getId();
-    }
-
-    public static User getUser(){
-        return user;
+    public static boolean canEdit(User userx) {
+        if (safeGet() == null) {
+            if (userx.getId() != null) {
+                throw new AccessDeniedException("Anonymous cannot edit other people's accounts ...");
+            }
+            return true;
+        }
+        else {
+            if (authUserId() != userx.getId()) {
+                throw new AccessDeniedException("You cannot edit other people's accounts ...");
+            }
+            return true;
+        }
     }
 }

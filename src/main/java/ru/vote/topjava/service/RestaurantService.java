@@ -1,12 +1,10 @@
 package ru.vote.topjava.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import ru.vote.topjava.model.Restaurant;
-import ru.vote.topjava.model.User;
 import ru.vote.topjava.repository.RestaurantRepository;
-import ru.vote.topjava.repository.UserRepository;
 import ru.vote.topjava.util.SecurityUtil;
 
 import java.util.List;
@@ -35,18 +33,15 @@ public class RestaurantService {
     public void delete(int id, long authUserId){
         Restaurant restaurant = restaurantRepository.findById(id).get();
         if (restaurant.getIdOwnerRest() != authUserId){
-            throw new BadCredentialsException("You cannot edit restaurant because restaurant does not exist or you do not have access...");
+            throw new AccessDeniedException("You cannot edit restaurant because restaurant does not exist or you do not have access...");
         }
         restaurantRepository.deleteById(id);
     }
 
     // Получить заготовку ресторана (Доступно только администраторам)
-    public Restaurant getNewRest(long authUserId){
-        if (SecurityUtil.isAdmin()) {
-            Restaurant restaurant = new Restaurant((int) authUserId, "name rest", "address", SecurityUtil.getUser());
-            return restaurant;
-        }
-        throw new BadCredentialsException("You cannot edit restaurant because restaurant does not exist or you do not have access...");
+    public Restaurant getNewRest(long authUserId) {
+        Restaurant restaurant = new Restaurant((int) authUserId, "name rest", "address", SecurityUtil.safeGet().getUser());
+        return restaurant;
     }
 
     // Сохранить или обновить ресторан (Доступно только автору)
@@ -54,6 +49,6 @@ public class RestaurantService {
         if (restaurant.getIdOwnerRest() == authUserId) {
             return restaurantRepository.save(restaurant);
         }
-        throw new BadCredentialsException("You cannot edit restaurant because restaurant does not exist or you do not have access...");
+        throw new AccessDeniedException("You cannot edit restaurant because restaurant does not exist or you do not have access...");
     }
 }

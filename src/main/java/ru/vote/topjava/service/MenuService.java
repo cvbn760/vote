@@ -1,7 +1,7 @@
 package ru.vote.topjava.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import ru.vote.topjava.model.Menu;
 import ru.vote.topjava.model.Restaurant;
@@ -35,14 +35,8 @@ public class MenuService {
         return menuRepository.getMenuByDate(voter.getDate());
     }
 
-    // Зачем это нужно???
-//    // Получить любое меню из тех, в голосовании за которое пользователь принимал участие
-//    public Menu getMenuForUserByVote(int userId, int menuId){
-//        return menuRepository.getMenuForUserByVote(userId, menuId);
-//    }
-
     // Получить меню с наибольшим(наименьшим) количеством очков в данный день (Доступно для всех)
-    public Menu getTypeMenuByDate(LocalDate dateTime, int type){
+    public List<Menu> getTypeMenuByDate(LocalDate dateTime, int type){
         return (type == 1) ? menuRepository.getBestMenuByDate(dateTime) : menuRepository.getMenuLoserByDate(dateTime);
     }
 
@@ -71,7 +65,7 @@ public class MenuService {
     private boolean canEdit(int restId, long authUserId){
         List<Restaurant> restaurant = Collections.singletonList(restaurantRepository.findById(restId).get());
         if (restaurant.isEmpty() || restaurant.get(0).getAdminRest().getId() != authUserId){
-            throw new BadCredentialsException("You cannot edit menu because the menu or restaurant does not exist or you do not have access...");
+            throw new AccessDeniedException("You cannot edit menu because the menu or restaurant does not exist or you do not have access...");
         }
         return true;
     }

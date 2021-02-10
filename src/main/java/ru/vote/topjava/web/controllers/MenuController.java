@@ -1,7 +1,6 @@
 package ru.vote.topjava.web.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +17,13 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(value = MenuController.MENU_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class MenuController {
-    static final String MENU_URL = "/rest/menus";
+    static final String MENU_URL = "/menus";
 
     @Autowired
     private MenuService menuService;
 
     // Достать вообще все меню / Достать все меню за конкретную дату / Достать меню конкретного ресторана (Доступно всем)
-    @RequestMapping(value = "/all", method = RequestMethod.GET)
+    @RequestMapping(value = "/all/ms", method = RequestMethod.GET)
     public List<Menu> getAllMenus(@RequestParam(name = "date", required = false)
                                   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
                                   @RequestParam(name = "id", required = false) Integer id){
@@ -36,29 +35,29 @@ public class MenuController {
         return menuList;
     }
 
-    // Достать меню с максимальным(минимальным) количеством голосов в требуемый день (Доступно всем)
-    @RequestMapping(value = "/get_win/{type}", method = RequestMethod.GET)
-    public Menu getVotingWinner(@RequestParam(name = "date", required = false)
+    // Достать меню с максимальным(минимальным) количеством голосов в требуемый день (Доступно только авторизованным пользователем)
+    @RequestMapping(value = "/auth/get_win/{type}", method = RequestMethod.GET)
+    public List<Menu> getVotingWinner(@RequestParam(name = "date", required = false)
                                 @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
                                 @PathVariable(name = "type", required = true) Integer type){
         return menuService.getTypeMenuByDate(date, type);
     }
 
     // Получить заготовку меню (Доступно только администратору ресторана)
-    @RequestMapping(value = "/new_menu/{id_rest}", method = RequestMethod.GET)
+    @RequestMapping(value = "/admin/new_menu/{id_rest}", method = RequestMethod.GET)
     public Menu getNewMenu(@PathVariable(name = "id_rest", required = true) Integer id){
         return menuService.getNewMenu(id, SecurityUtil.authUserId());
     }
 
     // Сохранить или обновить меню (Доступно только автору)
-    @RequestMapping(value = "/create", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/admin/create", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Menu> createOrUpdate(@RequestBody Menu menu){
         menuService.createOrUpdate(menu, SecurityUtil.authUserId());
         return ResponseEntity.ok(menu);
     }
 
     // Удалить меню (Доступно только автору)
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/admin/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable int id){
         menuService.delete(id, SecurityUtil.authUserId());
     }
